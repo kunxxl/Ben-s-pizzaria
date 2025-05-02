@@ -1,0 +1,17 @@
+#dashboard1
+SELECT
+    orders.order_id,
+    item.item_price,
+    orders.quatity,
+    item.item_cat,
+    item.item_name,
+    orders.created_at,
+    address.delivery_address1,
+    address.delivery_address2,
+    address.delivery_city,
+    address.delivery_zipcode,
+    orders.delivery
+FROM
+    orders
+LEFT JOIN item ON orders.item_id = item.item_id
+LEFT JOIN address ON orders.add_id = address.add_id

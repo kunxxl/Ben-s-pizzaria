@@ -1,0 +1,41 @@
+#stock1 view
+CREATE VIEW stock1 AS SELECT
+    s1.item_name,
+    s1.ing_id,
+    s1.ing_name,
+    s1.ing_weight,
+    s1.ing_price,
+    s1.order_quantity,
+    s1.recipe_quantity,
+    s1.order_quantity * s1.recipe_quantity AS ordered_weight,
+    s1.ing_price / s1.ing_weight AS unit_cost,
+    (
+        s1.order_quantity * s1.recipe_quantity
+    ) *(s1.ing_price / s1.ing_weight) AS ingredient_cost
+FROM
+    (
+    SELECT
+        orders.item_id,
+        item.sku,
+        item.item_name,
+        recipe.ing_id,
+        ingredient.ing_name,
+        recipe.quantity AS recipe_quantity,
+        SUM(orders.quatity) AS order_quantity,
+        ingredient.ing_weight,
+        ingredient.ing_price
+    FROM
+        orders
+    LEFT JOIN item ON orders.item_id = item.item_id
+    LEFT JOIN recipe ON item.sku = recipe.recipe_id
+    LEFT JOIN ingredient ON ingredient.ing_id = recipe.ing_id
+    GROUP BY
+        orders.item_id,
+        item.sku,
+        item.item_name,
+        recipe.ing_id,
+        recipe.quantity,
+        ingredient.ing_name,
+        ingredient.ing_weight,
+        ingredient.ing_price
+) s1
